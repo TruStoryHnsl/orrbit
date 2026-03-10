@@ -1,0 +1,33 @@
+# Orrbit Configuration
+app_name: orrbit
+port: 5000
+secret_key: ""  # Auto-generated if empty
+
+# Data directory for DB, thumbnails, user data
+data_dir: ./data
+
+# Directories to serve (slug: path)
+directories:
+  documents: /path/to/documents
+  media: /path/to/media
+  photos: /path/to/photos
+
+# Default users (seeded on first boot if users.json doesn't exist)
+users:
+  - username: admin
+    password: changeme
+
+# Indexer settings
+indexer:
+  interval: 1800  # seconds between full scans
+  enabled: true
+
+# Thumbnail settings
+thumbnails:
+  enabled: true
+  width: 320
+  height: 180
+
+# Upload settings
+upload:
+  max_size_mb: 500  # Max upload file size in MB

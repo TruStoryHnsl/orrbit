@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environment
+venv/
+.venv/
+
+# Runtime / data
+.env
+config.yaml
+data/
+*.db
+*.db-journal
+*.db-wal
+
+# OS
+.DS_Store
+thumbs/
+
+# IDE / tools
+.claude/
+
+# Root-level screenshots and pip artifacts (preserve static/icons/*.png)
+/*.png
+/*.jpg
+/=*

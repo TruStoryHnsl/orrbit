@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}{% if tab_subtitle %}{% if is_root %}Browse{% else %}{{ slug }}/{{ rel_path }}{% endif %} — {% endif %}{{ tab_title or app_name }}{% endblock %}
+
+{% block content %}
+{% if is_root %}
+{# Root view: directory cards #}
+<div class="root-view">
+    <div class="global-search-bar">
+        <input type="text" id="global-search" placeholder="Search all files..." class="global-search-input" autocomplete="off">
+    </div>
+    <div id="search-results" class="search-results" hidden></div>
+
+    <div id="root-content">
+    {# Favorites section #}
+    <div id="favorites-section" class="favorites-section" hidden>
+        <h2 class="page-title">Favorites</h2>
+        <div id="favorites-list" class="favorites-list"></div>
+    </div>
+
+    <h2 class="page-title">Directories</h2>
+    <div class="dir-cards">
+        {% for slug, path in directories.items() %}
+        <a href="{{ url_for('browse.browse_directory', slug=slug) }}" class="dir-card">
+            <span class="dir-card-icon">&#128193;</span>
+            <span class="dir-card-name">{{ slug }}</span>
+        </a>
+        {% endfor %}
+    </div>
+    </div>
+</div>
+
+{% else %}
+{# Directory listing view #}
+<div class="browse-view">
+    {# Breadcrumbs #}
+    <nav class="breadcrumbs">
+        <a href="{{ url_for('browse.index') }}">Home</a>
+        <span class="sep">/</span>
+        <a href="{{ url_for('browse.browse_directory', slug=slug) }}">{{ slug }}</a>
+        {% for name, path in breadcrumbs %}
+        <span class="sep">/</span>
+        <a href="{{ url_for('browse.browse_directory', slug=slug, rel_path=path) }}">{{ name }}</a>
+        {% endfor %}
+    </nav>
+
+    {# Controls bar #}
+    <div class="controls-bar">
+        <div class="controls-left">
+            <input type="text" id="search-input" placeholder="Search..." class="search-input">
+            <select id="type-filter" class="type-filter">
+                <option value="">All types</option>
+                <option value="dir">Folders</option>
+                <option value="video">Video</option>
+                <option value="image">Image</option>
+                <option value="audio">Audio</option>
+                <option value="text">Text</option>
+                <option value="pdf">PDF</option>
+                <option value="epub">EPUB</option>
+            </select>
+            <select id="tag-filter" class="type-filter">
+                <option value="">All tags</option>
+            </select>
+        </div>
+        <div class="controls-right">
+            <select id="sort-select" class="sort-select">
+                <option value="name">Name</option>
+                <option value="date">Date</option>
+                <option value="size">Size</option>
+                <option value="type">Type</option>
+            </select>
+            <button id="sort-dir-btn" class="icon-btn" title="Toggle sort direction">&#9650;</button>
+            <button id="tag-mode-btn" class="icon-btn" title="Tag mode">&#127991;</button>
+            <button id="select-mode-btn" class="icon-btn" title="Select mode">&#9745;</button>
+            <div class="view-toggle">
+                <button class="icon-btn view-btn active" data-view="list" title="List view">&#9776;</button>
+                <button class="icon-btn view-btn" data-view="grid" title="Grid view">&#9638;</button>
+            </div>
+        </div>
+    </div>
+
+    {# Tag palette (shown when tag mode is active) #}
+    <div id="tag-palette" class="tag-palette hidden"></div>
+
+    {# Items container (loaded via JS) #}
+    <div id="items-container" class="items-list"
+         data-slug="{{ slug }}"
+         data-path="{{ rel_path }}">
+        <div class="loading">Loading...</div>
+    </div>
+
+    {# Pagination #}
+    <div id="pagination" class="pagination"></div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if is_root %}
+<script src="{{ url_for('static', filename='js/root.js') }}"></script>
+{% else %}
+<script src="{{ url_for('static', filename='js/browse.js') }}"></script>
+{% endif %}
+{% endblock %}

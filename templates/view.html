@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}{% if tab_subtitle %}{{ file.name }} — {% endif %}{{ tab_title or app_name }}{% endblock %}
+
+{% block head %}
+{% if file.file_type == 'pdf' %}
+<script src="{{ url_for('static', filename='js/pdf.min.js') }}"></script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="viewer-config"
+     data-slug="{{ slug }}"
+     data-path="{{ rel_path }}"
+     data-file-type="{{ file.file_type }}"
+     data-pdf-worker="{{ url_for('static', filename='js/pdf.worker.min.js') }}"
+     data-raw-url="{{ url_for('viewer.raw_file', slug=slug, rel_path=rel_path) }}"
+     hidden></div>
+<div class="view-container">
+    {# Breadcrumbs #}
+    <nav class="breadcrumbs">
+        <a href="{{ url_for('browse.index') }}">Home</a>
+        <span class="sep">/</span>
+        <a href="{{ url_for('browse.browse_directory', slug=slug) }}">{{ slug }}</a>
+        {% for name, path in breadcrumbs[:-1] %}
+        <span class="sep">/</span>
+        <a href="{{ url_for('browse.browse_directory', slug=slug, rel_path=path) }}">{{ name }}</a>
+        {% endfor %}
+        {% if breadcrumbs %}
+        <span class="sep">/</span>
+        <span class="current">{{ breadcrumbs[-1][0] }}</span>
+        {% endif %}
+    </nav>
+
+    {# File info bar #}
+    <div class="file-info-bar">
+        <button id="fav-btn" class="fav-toggle" data-slug="{{ slug }}" data-path="{{ rel_path }}" data-name="{{ file.name }}" data-type="{{ file.file_type }}" title="Toggle favorite">&#9734;</button>
+        <span class="file-name">{{ file.name }}</span>
+        <span class="file-meta">{{ file.size_human }} &middot; {{ file.mtime_human }}</span>
+        <a href="{{ url_for('viewer.raw_file', slug=slug, rel_path=rel_path) }}" class="btn btn-sm" download>Download</a>
+        <button id="share-btn" class="btn btn-sm" data-slug="{{ slug }}" data-path="{{ rel_path }}">Share</button>
+        <select id="share-ttl" class="share-ttl">
+            <option value="300">5 min</option>
+            <option value="1800" selected>30 min</option>
+            <option value="3600">1 hour</option>
+            <option value="21600">6 hours</option>
+            <option value="43200">12 hours</option>
+            <option value="86400">24 hours</option>
+        </select>
+        <span id="share-status" class="share-status"></span>
+    </div>
+
+    {# Tags #}
+    <div class="file-tags-bar" id="tags-bar" data-slug="{{ slug }}" data-path="{{ rel_path }}">
+        <span class="tags-label">Tags:</span>
+        <div id="tags-list" class="tags-list"></div>
+        <input type="text" id="tag-input" class="tag-input" placeholder="Add tag..." maxlength="30">
+    </div>
+
+    {# Content area #}
+    <div class="viewer-content">
+        {% if file.file_type == 'video' %}
+        <div class="video-viewer">
+            <video controls autoplay preload="metadata">
+                <source src="{{ url_for('viewer.raw_file', slug=slug, rel_path=rel_path) }}" type="{{ file.mime }}">
+                Your browser does not support video playback.
+            </video>
+            {% if video_meta.duration %}
+            <div class="video-info">{{ video_meta.duration }}{% if video_meta.width %} &middot; {{ video_meta.width }}x{{ video_meta.height }}{% endif %}</div>
+            {% endif %}
+        </div>
+
+        {% elif file.file_type == 'audio' %}
+        <div class="audio-viewer">
+            <audio controls autoplay preload="metadata">
+                <source src="{{ url_for('viewer.raw_file', slug=slug, rel_path=rel_path) }}" type="{{ file.mime }}">
+                Your browser does not support audio playback.
+            </audio>
+        </div>
+
+        {% elif file.file_type == 'image' %}
+        <div class="image-viewer">
+            <img src="{{ url_for('viewer.raw_file', slug=slug, rel_path=rel_path) }}" alt="{{ file.name }}">
+        </div>
+
+        {% elif file.file_type == 'pdf' %}
+        <div class="pdf-viewer" id="pdf-viewer">
+            <div class="pdf-controls">
+                <button id="pdf-prev" class="btn btn-sm">&larr; Prev</button>
+                <span id="pdf-page-info">Page 1 / ?</span>
+                <button id="pdf-next" class="btn btn-sm">Next &rarr;</button>
+            </div>
+            <canvas id="pdf-canvas"></canvas>
+        </div>
+
+        {% elif file.file_type == 'text' %}
+        <div class="text-viewer">
+            <pre class="text-content">{{ text_content }}</pre>
+        </div>
+
+        {% else %}
+        <div class="other-viewer">
+            <p>No preview available for this file type.</p>
+            <a href="{{ url_for('viewer.raw_file', slug=slug, rel_path=rel_path) }}" class="btn btn-primary" download>Download {{ file.name }}</a>
+        </div>
+        {% endif %}
+    </div>
+
+    {# Prev/Next navigation #}
+    <div class="file-nav">
+        {% if prev_file %}
+        <a href="{{ url_for('viewer.view_file', slug=slug, rel_path=prev_file) }}" class="nav-prev">&larr; Previous</a>
+        {% else %}
+        <span></span>
+        {% endif %}
+        {% if next_file %}
+        <a href="{{ url_for('viewer.view_file', slug=slug, rel_path=next_file) }}" class="nav-next">Next &rarr;</a>
+        {% else %}
+        <span></span>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/viewer.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,12 @@
+.venv/
+.git/
+data/
+__pycache__/
+*.pyc
+config.yaml
+nginx.conf
+.claude/
+
+# Root-only — preserve static/icons/*.png for PWA manifest
+/*.png
+/*.jpg

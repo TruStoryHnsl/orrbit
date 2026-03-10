@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{% if tab_subtitle %}Activity — {% endif %}{{ tab_title or app_name }}{% endblock %}
+
+{% block content %}
+<div class="activity-page">
+    <h1 class="page-title">Activity Log</h1>
+
+    <div class="activity-filters">
+        <select id="action-filter" class="type-filter">
+            <option value="">All actions</option>
+            <option value="login">Login</option>
+            <option value="download">Download</option>
+            <option value="upload">Upload</option>
+            <option value="share">Share</option>
+            <option value="delete">Delete</option>
+            <option value="move">Move</option>
+            <option value="tag">Tag</option>
+            <option value="favorited">Favorited</option>
+        </select>
+    </div>
+
+    <div id="activity-list" class="activity-list">
+        <div class="loading">Loading...</div>
+    </div>
+
+    <div id="activity-pagination" class="pagination"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/activity.js') }}"></script>
+{% endblock %}

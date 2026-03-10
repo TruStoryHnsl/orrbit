@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ error_code }} — {{ tab_title or app_name }}{% endblock %}
+{% block content %}
+<div class="error-page">
+    <h1>{{ error_code }}</h1>
+    <p>{{ error_message }}</p>
+    <a href="{{ url_for('browse.index') }}" class="btn">Back to Browse</a>
+</div>
+{% endblock %}

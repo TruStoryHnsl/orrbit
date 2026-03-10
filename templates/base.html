@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"{% if theme and theme != 'midnight' %} data-theme="{{ theme }}"{% endif %}>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ tab_title or app_name }}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% if theme and theme not in ('midnight', 'slate', 'oled', 'dawn') %}
+    <link rel="stylesheet" id="third-party-theme" href="{{ url_for('static', filename='themes/' + theme + '.css') }}">
+    {% endif %}
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% if current_user.is_authenticated %}
+    <header class="app-header">
+        <a href="{{ url_for('browse.index') }}" class="app-logo">{{ app_name }}</a>
+        <nav class="app-nav">
+            <a href="{{ url_for('browse.index') }}" class="nav-link">Browse</a>
+            <a href="{{ url_for('share.shares_page') }}" class="nav-link">Shares</a>
+            <a href="{{ url_for('upload.staging_page') }}" class="nav-link">Staging</a>
+            <a href="{{ url_for('api.activity_page') }}" class="nav-link">Activity</a>
+            <a href="{{ url_for('settings.settings_page') }}" class="nav-link">Settings</a>
+            <button id="pwa-install-btn" class="nav-link install-btn" hidden>Install</button>
+            <a href="{{ url_for('auth.logout') }}" class="nav-link">Logout</a>
+        </nav>
+    </header>
+    {% endif %}
+
+    <main class="app-main">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+    <script src="{{ url_for('static', filename='js/pwa.js') }}"></script>
+</body>
+</html>

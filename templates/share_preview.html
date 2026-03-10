@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ filename }} — Shared File</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="app-main">
+        <div class="share-preview-page">
+            <div class="share-card">
+                <div class="share-icon">
+                    {% if file_type == 'video' %}&#127909;
+                    {% elif file_type == 'image' %}&#128444;
+                    {% elif file_type == 'audio' %}&#127925;
+                    {% elif file_type == 'pdf' %}&#128196;
+                    {% elif file_type == 'text' %}&#128196;
+                    {% else %}&#128196;
+                    {% endif %}
+                </div>
+                <h1 class="share-filename">{{ filename }}</h1>
+                <p class="share-meta">{{ size_human }} &middot; Expires in {{ link.remaining_minutes }} min</p>
+                <a href="{{ url_for('share.public_download', token=token, download='1') }}" class="btn btn-primary btn-lg">Download</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

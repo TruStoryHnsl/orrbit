@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{% if tab_subtitle %}Shared Links — {% endif %}{{ tab_title or app_name }}{% endblock %}
+
+{% block content %}
+<div class="shares-page">
+    <h1 class="page-title">Shared Links</h1>
+
+    {% if links %}
+    <div class="shares-list">
+        {% for link in links %}
+        <div class="share-row" id="share-{{ link.token }}">
+            <div class="share-info">
+                <span class="share-filename">{{ link.filename }}</span>
+                <span class="share-meta">{{ link.root }}/{{ link.file_path }}</span>
+                <span class="share-meta">Expires in {{ link.remaining_minutes }} min &middot; Created {{ link.created_at_human }}</span>
+            </div>
+            <div class="share-actions">
+                <button class="btn btn-sm copy-btn" data-url="{{ url_for('share.public_download', token=link.token, _external=True) }}">Copy Link</button>
+                <button class="btn btn-sm revoke-btn" data-token="{{ link.token }}">Revoke</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">No active share links. Use the Share button on any file to create one.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/shares.js') }}"></script>
+{% endblock %}

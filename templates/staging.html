@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{% if tab_subtitle %}Staging — {% endif %}{{ tab_title or app_name }}{% endblock %}
+
+{% block content %}
+<div class="staging-page">
+    <h1 class="page-title">Staging Area</h1>
+
+    <div class="upload-zone" id="upload-zone">
+        <div class="upload-zone-content">
+            <div class="upload-icon">&#128228;</div>
+            <p>Drag &amp; drop files here or <label class="upload-label" for="file-input">browse</label></p>
+            <input type="file" id="file-input" multiple hidden>
+        </div>
+    </div>
+
+    {% if files %}
+    <div class="staging-list" id="staging-list">
+        {% for f in files %}
+        <div class="staging-row" data-filename="{{ f.name }}">
+            <div class="staging-info">
+                <span class="staging-filename">{{ f.original_name }}</span>
+                <span class="staging-meta">{{ f.size_human }} &middot; {{ f.source }}</span>
+            </div>
+            <div class="staging-actions">
+                <select class="move-dest">
+                    {% for slug in directories %}
+                    <option value="{{ slug }}">{{ slug }}/</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-sm move-btn">Move</button>
+                <button class="btn btn-sm delete-btn">Delete</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state" id="empty-state">No files in staging. Upload files or use the share sheet on your device.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/staging.js') }}"></script>
+{% endblock %}

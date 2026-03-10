@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block title %}{% if tab_subtitle %}Settings — {% endif %}{{ tab_title or app_name }}{% endblock %}
+
+{% block content %}
+<div class="settings-page">
+    <h1 class="page-title">Settings</h1>
+
+    <!-- General -->
+    <div class="settings-section" data-section="general">
+        <div class="settings-section-title">
+            <span>General</span>
+            <span class="section-arrow">&#9660;</span>
+        </div>
+        <div class="settings-section-body">
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label for="setting-app-name">App Name</label>
+                    <input type="text" id="setting-app-name" placeholder="orrbit">
+                </div>
+                <div class="form-group flex-1">
+                    <label for="setting-tab-title">Tab Title <span class="text-muted">(blank = app name)</span></label>
+                    <input type="text" id="setting-tab-title" placeholder="Leave blank to use app name">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-check">
+                    <input type="checkbox" id="setting-tab-subtitle">
+                    <span>Show page name in tab title <span class="text-muted">(e.g. "Browse — orrbit" instead of "orrbit")</span></span>
+                </label>
+            </div>
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label for="setting-port">Port <span class="restart-badge" id="port-restart-badge" hidden>restart required</span></label>
+                    <input type="number" id="setting-port" min="1" max="65535">
+                </div>
+                <div class="form-group flex-1">
+                    <label for="setting-max-upload">Max Upload (MB)</label>
+                    <input type="number" id="setting-max-upload" min="1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Data Directory</label>
+                <div class="readonly-value" id="setting-data-dir"></div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary btn-sm" id="save-general">Save</button>
+                <span class="save-status" id="general-status"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme -->
+    <div class="settings-section" data-section="theme">
+        <div class="settings-section-title">
+            <span>Theme</span>
+            <span class="section-arrow">&#9660;</span>
+        </div>
+        <div class="settings-section-body">
+            <div class="theme-grid" id="theme-grid"></div>
+            <span class="save-status" id="theme-status"></span>
+        </div>
+    </div>
+
+    <!-- Source Directories -->
+    <div class="settings-section" data-section="directories">
+        <div class="settings-section-title">
+            <span>Source Directories</span>
+            <span class="section-arrow">&#9660;</span>
+        </div>
+        <div class="settings-section-body">
+            <div class="settings-list" id="directories-list"></div>
+            <div class="settings-add-form">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="new-dir-name">Name</label>
+                        <input type="text" id="new-dir-name" placeholder="my-files">
+                    </div>
+                    <div class="form-group flex-2">
+                        <label for="new-dir-path">Path</label>
+                        <input type="text" id="new-dir-path" placeholder="/home/user/files">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary btn-sm" id="add-directory">Add Directory</button>
+                    <span class="save-status" id="dir-status"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users -->
+    <div class="settings-section" data-section="users">
+        <div class="settings-section-title">
+            <span>Users</span>
+            <span class="section-arrow">&#9660;</span>
+        </div>
+        <div class="settings-section-body">
+            <div class="settings-list" id="users-list"></div>
+            <div class="settings-add-form">
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="new-user-name">Username</label>
+                        <input type="text" id="new-user-name" placeholder="username">
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="new-user-pass">Password</label>
+                        <input type="password" id="new-user-pass" placeholder="password">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary btn-sm" id="add-user">Add User</button>
+                    <span class="save-status" id="user-status"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Indexer -->
+    <div class="settings-section" data-section="indexer">
+        <div class="settings-section-title">
+            <span>Indexer</span>
+            <span class="section-arrow">&#9660;</span>
+        </div>
+        <div class="settings-section-body">
+            <div class="indexer-stats" id="indexer-stats"></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-check">
+                        <input type="checkbox" id="setting-indexer-enabled">
+                        <span>Enabled</span>
+                    </label>
+                </div>
+                <div class="form-group flex-1">
+                    <label for="setting-indexer-interval">Interval (seconds)</label>
+                    <input type="number" id="setting-indexer-interval" min="60">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary btn-sm" id="save-indexer">Save</button>
+                <button class="btn btn-sm" id="trigger-scan">Trigger Scan</button>
+                <span class="save-status" id="indexer-status"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SFTP -->
+    <div class="settings-section" data-section="sftp">
+        <div class="settings-section-title">
+            <span>SFTP Server</span>
+            <span class="section-arrow">&#9660;</span>
+        </div>
+        <div class="settings-section-body">
+            <div class="indexer-stats" id="sftp-stats"></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-check">
+                        <input type="checkbox" id="setting-sftp-enabled">
+                        <span>Enabled</span>
+                    </label>
+                </div>
+                <div class="form-group flex-1">
+                    <label for="setting-sftp-port">Port</label>
+                    <input type="number" id="setting-sftp-port" min="1" max="65535">
+                </div>
+                <div class="form-group">
+                    <label class="form-check">
+                        <input type="checkbox" id="setting-sftp-readonly">
+                        <span>Read Only</span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group" id="sftp-fingerprint-group" style="display:none">
+                <label>Host Key Fingerprint</label>
+                <div class="readonly-value" id="sftp-fingerprint" style="font-family:monospace;font-size:0.85em"></div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary btn-sm" id="save-sftp">Save</button>
+                <span class="save-status" id="sftp-status"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thumbnails -->
+    <div class="settings-section" data-section="thumbnails">
+        <div class="settings-section-title">
+            <span>Thumbnails</span>
+            <span class="section-arrow">&#9660;</span>
+        </div>
+        <div class="settings-section-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-check">
+                        <input type="checkbox" id="setting-thumb-enabled">
+                        <span>Enabled</span>
+                    </label>
+                </div>
+                <div class="form-group flex-1">
+                    <label for="setting-thumb-width">Width</label>
+                    <input type="number" id="setting-thumb-width" min="50" max="2000">
+                </div>
+                <div class="form-group flex-1">
+                    <label for="setting-thumb-height">Height</label>
+                    <input type="number" id="setting-thumb-height" min="50" max="2000">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary btn-sm" id="save-thumbnails">Save</button>
+                <span class="save-status" id="thumb-status"></span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+{% endblock %}
