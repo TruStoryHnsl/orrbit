@@ -1,0 +1,38 @@
+# Orrbit Test Configuration
+app_name: orrbit-test
+port: 5099
+secret_key: "test-secret-key-do-not-use-in-production-1234567890abcdef"
+
+data_dir: ./data-test
+
+directories:
+  backup: /mnt/orrigins/backup
+
+users:
+  - username: admin
+    password: testpass123
+
+indexer:
+  interval: 1800
+  enabled: true
+
+thumbnails:
+  enabled: true
+  width: 320
+  height: 180
+
+upload:
+  max_size_mb: 500
+
+sftp:
+  enabled: true
+  port: 2299
+  read_only: true
+
+webdav:
+  enabled: true
+  port: 8099
+  read_only: false
+
+activity:
+  retention_days: 30
