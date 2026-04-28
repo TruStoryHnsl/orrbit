@@ -1,0 +1,83 @@
+name: Bug report
+description: Report something Orrbit is doing wrong.
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please fill out the sections
+        below — concrete reproduction steps and observed behaviour are far
+        more useful than a description of what you think is going on.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: One or two sentences describing the bug.
+      placeholder: "Thumbnail generation hangs forever for PDFs larger than 100 MB."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour
+      description: What actually happened? Include error messages verbatim if possible.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Numbered steps that reliably trigger the bug.
+      placeholder: |
+        1. Drop a 200 MB PDF into a configured root.
+        2. Wait for the indexer to pick it up.
+        3. Click the thumbnail in the grid view.
+        4. Observe the spinner spin forever.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Orrbit version / commit
+      description: Output of `git rev-parse --short HEAD` or the release tag you are running.
+    validations:
+      required: true
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment
+      options:
+        - Docker Compose
+        - Bare metal (run_dev.py)
+        - Bare metal (gunicorn / run_prod.py)
+        - Other (describe in environment)
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version (if running outside Docker), reverse proxy in front of Orrbit, storage backend (local disk / NFS / CIFS / SMB), filesystem if exotic.
+      placeholder: |
+        - OS: Debian 12
+        - Python: 3.12.3 (Docker base image python:3.12-slim)
+        - Reverse proxy: Caddy 2.7
+        - Storage: NFS mount of a TrueNAS share
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: |
+        `docker compose logs --tail=200 orrbit`, browser console errors, etc.
+        Trim to the relevant window — please don't dump megabytes.
+      render: shell
