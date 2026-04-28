@@ -1,0 +1,47 @@
+name: Feature request
+description: Suggest something Orrbit should do that it doesn't yet.
+title: "[feat]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Orrbit aims to stay small and operable by one person. Feature requests
+        are welcome but not all of them will land — the more concrete the
+        problem and proposed solution, the better the chance.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user-facing problem does this solve? Describe the situation, not the solution.
+      placeholder: "When sharing large folders with someone, I have to send them N share links — there's no way to share a directory."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What would the ideal behaviour look like from the user's perspective?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Workarounds, similar tools' approaches, or features you decided against and why.
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      description: Who is this for?
+      options:
+        - Just me (single-user workflow)
+        - Would-like-to-share (broader self-hosting audience)
+        - Commercial-fit (would justify a paid hosted offering)
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Mockups, links, prior art, related issues.
